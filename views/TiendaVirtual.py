@@ -1,4 +1,4 @@
- import tkinter as tk
+import tkinter as tk
 from tkinter import messagebox
 from model.producto import Producto
 class TiendaVirtual(tk.Tk):

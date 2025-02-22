@@ -23,4 +23,8 @@ class Producto:
     def set_nombre(self, nombre):
         self.__nombre = nombre
 
+    # Otros metodos
+    def descuento_aplicable(self, producto, precio):
+        pass
+        
     

@@ -4,6 +4,8 @@ class Carrito:
         self.__id_producto = id_producto
         self.__cantidad = cantidad
 
+    # Getters y Setters
+
     def get_id_usuario(self):
         return self.__id_usuario
 

@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
-
+from model.producto import Producto
 class TiendaVirtual(tk.Tk):
-    def __init__(self, productos):
+    def __init__(self, productos: list[Producto]):
         super().__init__()
 
         self.title("Tienda Virtual de Electrónicos")
@@ -18,10 +18,14 @@ class TiendaVirtual(tk.Tk):
         self.productos_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10, pady=10)
         self.productos_frame.pack_propagate(False)
 
-        self.producto_var = tk.StringVar()
-
         for producto in productos:
-            producto_button = tk.Button(self.productos_frame, text=producto, command=lambda p=producto: self.agregar_producto(p), bg=boton_color, anchor='w')
+            producto_button = tk.Button(
+                self.productos_frame,
+                text=f"{producto.get_nombre()} - ${producto.get_precio()} (Stock: {producto.get_stock()})",
+                command=lambda p=producto: self.agregar_producto(p),
+                bg=boton_color,
+                anchor='w'
+            )
             producto_button.pack(fill=tk.X, pady=5)
 
         self.carrito_text = tk.Text(self, height=10, width=30, bg=fondo_color)
@@ -37,8 +41,18 @@ class TiendaVirtual(tk.Tk):
 
     def agregar_producto(self, producto):
         self.carrito_text.config(state=tk.NORMAL)
-        self.carrito_text.insert(tk.END, "- " + producto + "\n")
+        self.carrito_text.insert(tk.END, f"- {producto.nombre} - ${producto.precio} (Stock: {producto.stock})\n")
         self.carrito_text.config(state=tk.DISABLED)
 
     def ver_carrito(self):
         messagebox.showinfo("Carrito de Compras", "Productos en el carrito:\n" + self.carrito_text.get("1.0", tk.END))
+
+if __name__ == "__main__":
+    productos = [
+        Producto("TV", 500, 10),
+        Producto("Laptop", 1000, 5),
+        Producto("Teléfono", 300, 15),
+        Producto("Tablet", 200, 8)
+    ]
+    app = TiendaVirtual(productos)
+    app.mainloop()

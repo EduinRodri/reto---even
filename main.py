@@ -1,4 +1,4 @@
-from model.producto import Producto, producto
+from model.producto import Producto
 import views.TiendaVirtual as tienda
 
 

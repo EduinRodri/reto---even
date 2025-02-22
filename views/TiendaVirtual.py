@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from model.producto import Producto
+from model.carrito import Carrito
 
 class TiendaVirtual(tk.Tk):
     def __init__(self, productos):
@@ -29,6 +30,7 @@ class TiendaVirtual(tk.Tk):
         self.agregar_carrito_button.pack_forget()  # Ocultar el botón inicialmente
 
         self.producto_seleccionado = None
+        self.carrito = []
 
         for producto in productos:
             producto_button = tk.Button(
@@ -45,6 +47,15 @@ class TiendaVirtual(tk.Tk):
         self.carrito_text.config(state=tk.DISABLED)
         self.carrito_text.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
+        self.botones_frame = tk.Frame(self, bg=fondo_color)
+        self.botones_frame.pack(side=tk.BOTTOM, fill=tk.X)
+
+        self.comprar_button = tk.Button(self.botones_frame, text="Realizar Compra", command=self.realizar_compra, bg=boton_color)
+        self.comprar_button.pack(side=tk.LEFT, padx=10, pady=10)
+
+        self.vaciar_carrito_button = tk.Button(self.botones_frame, text="Vaciar Carrito", command=self.vaciar_carrito, bg=boton_color)
+        self.vaciar_carrito_button.pack(side=tk.LEFT, padx=10, pady=10)
+
     def mostrar_info_producto(self, producto):
         self.producto_seleccionado = producto
         self.info_producto.set(f"Nombre: {producto.get_nombre()}\nPrecio: ${producto.get_precio()}\nStock: {producto.get_stock()}")
@@ -52,13 +63,25 @@ class TiendaVirtual(tk.Tk):
 
     def agregar_producto(self):
         if self.producto_seleccionado:
-            producto = self.producto_seleccionado
+            carrito_item = Carrito(1, self.producto_seleccionado.get_nombre(), 1)  # Asumimos id_usuario = 1
+            self.carrito.append(carrito_item)
             self.carrito_text.config(state=tk.NORMAL)
-            self.carrito_text.insert(tk.END, f"- {producto.get_nombre()} - ${producto.get_precio()} (Stock: {producto.get_stock()})\n")
+            self.carrito_text.insert(tk.END, f"- {carrito_item.get_id_producto()} - ${self.producto_seleccionado.get_precio()} (Stock: {self.producto_seleccionado.get_stock()})\n")
             self.carrito_text.config(state=tk.DISABLED)
             self.producto_seleccionado = None
             self.agregar_carrito_button.pack_forget()
 
-    def ver_carrito(self):
-        messagebox.showinfo("Carrito de Compras", "Productos en el carrito:\n" + self.carrito_text.get("1.0", tk.END))
+    def realizar_compra(self):
+        messagebox.showinfo("Compra Realizada", "¡Gracias por su compra!")
+        self.vaciar_carrito()
 
+    def vaciar_carrito(self):
+        self.carrito.clear()
+        self.carrito_text.config(state=tk.NORMAL)
+        self.carrito_text.delete("1.0", tk.END)
+        self.carrito_text.insert(tk.END, "Carrito de compras:\n")
+        self.carrito_text.config(state=tk.DISABLED)
+
+    def ver_carrito(self):
+        productos_en_carrito = "\n".join([f"- {item.get_id_producto()} (Cantidad: {item.get_cantidad()})" for item in self.carrito])
+        messagebox.showinfo("Carrito de Compras", f"Productos en el carrito:\n{productos_en_carrito}")

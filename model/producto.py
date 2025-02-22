@@ -25,6 +25,18 @@ class Producto:
 
     # Otros metodos
     def descuento_aplicable(self, producto, precio):
-        pass
+        if producto.get_stock() > 0:
+            return precio - (precio * 0.2)
+        else:
+            return precio   
+        
+    def actualizar_stock(self, producto, cantidad):
+        producto.set_stock(producto.get_stock() - cantidad)
+        return producto.get_stock()
+        
+    def actualizar_precio(self, producto, precio):
+        producto.set_precio(precio)
+        return producto.get_precio()
+    
         
     
